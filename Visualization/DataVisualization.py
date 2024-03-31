@@ -1,13 +1,19 @@
 import numpy as np
 import pandas as pd
-import seaborn as sb
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 class DataVisualization:
 
     @staticmethod
     def histodist_for_features(data):
-        pass
+        features = data.columns.values
+
+        for feature in features:
+            sns.histplot(data[feature], kde=True, edgecolor='black')
+            plt.title(f'Distribution of {feature}')
+            plt.xlabel(feature)
+            plt.show()
 
     @staticmethod
     def visualize_price_all_leagues(data):
@@ -20,7 +26,7 @@ class DataVisualization:
 
         # Convert 'Date' column in dataframe to datetime and plot using seaborn
         data['Date'] = pd.to_datetime(data['Date'])
-        sb.lineplot(data=data, x='Date', y='Value', hue='League', ax=ax)
+        sns.lineplot(data=data, x='Date', y='Value', hue='League', ax=ax)
 
         plt.tight_layout()
         plt.show()
