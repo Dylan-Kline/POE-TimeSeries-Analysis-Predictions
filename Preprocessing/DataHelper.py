@@ -27,7 +27,7 @@ class DataHelper:
 
         # Combine seperate league data into one dataframe and save for later use
         unfiltered_df = pd.concat(df_list)
-        unfiltered_df.to_csv('data/currency.csv', index=False)
+        unfiltered_df.to_csv('data/currency.csv', index=True)
         return unfiltered_df
 
     @staticmethod
@@ -40,15 +40,15 @@ class DataHelper:
         if new_data_path is None or csv_path is None:
             return None
         
-        df_to_update = pd.read_csv(csv_path, delimiter=";", index_col='Date')
-        df_new = pd.read_csv(new_data_path, delimiter=";", index_col='Date')
+        df_to_update = pd.read_csv(csv_path, delimiter=";")
+        df_new = pd.read_csv(new_data_path, delimiter=";")
         df = pd.concat([df_to_update, df_new])
-        df.to_csv('data/currency.csv', index=True)
+        df.to_csv('data/currency.csv', index=False)
         return df
 
     @staticmethod
     def extract_exalt_and_divine(dataframe):
-        cond1 = (dataframe['Get'] == 'Exalted Orb') & (dataframe.index < '2022-08-19')
-        cond2 = (dataframe['Get'] == 'Divine Orb') & (dataframe.index > '2022-08-19')
+        cond1 = (dataframe['Get'] == 'Exalted Orb') & (dataframe['Date'] < '2022-08-19')
+        cond2 = (dataframe['Get'] == 'Divine Orb') & (dataframe['Date'] > '2022-08-19')
         dataframe = dataframe[cond1 | cond2]
         return dataframe
