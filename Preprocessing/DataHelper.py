@@ -43,7 +43,7 @@ class DataHelper:
         df_to_update = pd.read_csv(csv_path, delimiter=";", index_col='Date')
         df_new = pd.read_csv(new_data_path, delimiter=";", index_col='Date')
         df = pd.concat([df_to_update, df_new])
-        df.to_csv('data/currency.csv', index=False)
+        df.to_csv('data/currency.csv', index=True)
         return df
 
     @staticmethod
@@ -51,5 +51,4 @@ class DataHelper:
         cond1 = (dataframe['Get'] == 'Exalted Orb') & (dataframe.index < '2022-08-19')
         cond2 = (dataframe['Get'] == 'Divine Orb') & (dataframe.index > '2022-08-19')
         dataframe = dataframe[cond1 | cond2]
-        dataframe.to_csv('data/unengineered_exalt_currency.csv')
         return dataframe
