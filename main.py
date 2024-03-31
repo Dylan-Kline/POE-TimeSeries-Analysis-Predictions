@@ -8,6 +8,7 @@ def main():
     df = DataHelper.extract_exalt_and_divine(df)
     df['Get'] = df['Get'].replace('Divine Orb', 'Exalted Orb')
     exalts_df = df
-    print(exalts_df)
+    
+    
 
 main()
