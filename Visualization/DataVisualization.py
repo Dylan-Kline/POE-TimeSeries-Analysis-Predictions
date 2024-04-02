@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import math
 
 plt.style.use('fivethirtyeight')
 
@@ -57,7 +58,7 @@ class DataVisualization:
         plt.show()
     
     @staticmethod
-    def stepped_plot(data: pd.DataFrame, x_feature, y_feature, league) -> None:
+    def stepped_plot(data: pd.DataFrame, x_feature, y_feature, leagues) -> None:
         plot_params = dict(
             color="0.75",
             style=".-",
@@ -66,19 +67,31 @@ class DataVisualization:
             legend=False,
         )
 
-        # Grab specific league's data
-        data = data[data['League'] == league]
+        num_leagues = len(leagues)
+        num_columns = 5
+        num_rows = math.ceil(num_leagues/num_columns)
 
-        # Sort based on date
-        data.sort_values(by=x_feature)
+        # Create figure and subplots
+        fig, axs = plt.subplots(num_rows, num_columns, figsize=(15, num_rows * 2))
 
-        data[y_feature].plot(**plot_params)
+        for i, league in enumerate(leagues):
 
-        # Set x ticks to months
-        plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%B'))
+            # Calc row and column index for league plot
+            row_idx = i // num_columns
+            col_idx = i % num_columns
 
-        plt.ylabel(y_feature)
+            # Grab specific league's data
+            data = data[data['League'] == league]
+
+            # Sort based on date
+            data.sort_values(by=x_feature)
+
+            # Plot current league's data
+            ax = axs[row_idx, col_idx]
+            data[y_feature].plot(ax=ax, **plot_params)
+            ax.xaxis.set_major_locator(mdates.MonthLocator())
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%B'))
+            
         plt.tight_layout()
         plt.show()
 
