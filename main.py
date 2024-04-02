@@ -28,7 +28,7 @@ def main():
     # For each league display the stepped plot
     # for league in leagues:
     league = 'Affliction'
-    DataVisualization.stepped_plot(df, 'Date', 'Value', league)
+    DataVisualization.stepped_plot_all(df, 'Date', 'Value', leagues)
     #DataVisualization.visualize_price_all_leagues(df)
     #DataVisualization.histodist_for_features(df)
     #DataVisualization.plot_probability_density(df)
