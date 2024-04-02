@@ -8,7 +8,7 @@ plt.style.use('fivethirtyeight')
 class DataVisualization:
 
     @staticmethod
-    def histodist_for_features(data) -> None:
+    def histodist_for_features(data: pd.DataFrame) -> None:
         features = data.select_dtypes(include=['float'])
 
         for feature in features:
@@ -18,7 +18,7 @@ class DataVisualization:
             plt.show()
             
     @staticmethod
-    def plot_probability_density(data) -> None:
+    def plot_probability_density(data: pd.DataFrame) -> None:
         features = data.select_dtypes(include=['float'])
         
         for feature in features:
@@ -31,7 +31,7 @@ class DataVisualization:
             plt.show()
             
     @staticmethod
-    def boxstrip_plot(data, y_feature, x_feature) -> None:
+    def boxstrip_plot(data: pd.DataFrame, y_feature, x_feature) -> None:
         '''
             Create a combined box/strip plot for the given y_feature and x_feature.
             @ y_feature : y-axis feature
@@ -57,7 +57,7 @@ class DataVisualization:
         
 
     @staticmethod
-    def visualize_price_all_leagues(data) -> None:
+    def visualize_price_all_leagues(data: pd.DataFrame) -> None:
         '''
             Visualizes the price for all leagues in one graph.
             '''

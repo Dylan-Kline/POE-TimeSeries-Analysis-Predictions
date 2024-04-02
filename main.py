@@ -5,11 +5,13 @@ from Visualization.DataVisualization import *
 from Preprocessing.FeatureEngineer import *
 
 def main():
+    data_path = "data/currency.csv"
     df = pd.read_csv("data/V2.currency.csv")
     #DataVisualization.visualize_price_all_leagues(df)
     #DataVisualization.histodist_for_features(df)
     #DataVisualization.plot_probability_density(df)
     #DataVisualization.boxstrip_plot(df, 'Value', 'DayOfLeague')
-    DataVisualization.boxstrip_plot(df, 'Value', 'WeekOfLeague')
+    #DataVisualization.boxstrip_plot(df, 'Value', 'WeekOfLeague')
+    DataVisualization.boxstrip_plot(df, 'Value', 'Confidence')
 
 main()
