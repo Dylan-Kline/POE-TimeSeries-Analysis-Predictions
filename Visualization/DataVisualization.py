@@ -64,29 +64,21 @@ class DataVisualization:
         # Create figure and axis
         figure = plt.figure(figsize=(15, 10))
 
-        # Convert 'Date' column in dataframe to datetime and extract the days
-        data['Date'] = pd.to_datetime(data['Date'])
-
-        # Calc the start date of each league
-        start_dates = data.groupby('League')['Date'].min().rename('StartDate')
-
-        # Merge the start dates back into the original DataFrame
-        data = data.merge(start_dates, on='League')
-
-        data['DayOfLeague'] = (data['Date'] - data['StartDate']).dt.days + 1
-        data.to_csv('data/V2.currency.csv', index=False)
-
+        # Generate a large number of colors
+        num_leagues = len(data['League'].unique())
+        colors = plt.cm.get_cmap('tab20c_r', num_leagues)
+        
         # Grab each leagues data
         leagues = data['League'].unique()
 
         # Create a line plot for each league 
-        for league in leagues:
+        for i, league in enumerate(data['League'].unique()):
             
             # filter the data to grab each leagues specific data
             league_data = data[data['League'] == league]
 
             # Create line plot for league_data
-            sns.lineplot(data=league_data, x='DayOfLeague', y='Value', label=league)
+            sns.lineplot(data=league_data, x='DayOfLeague', y='Value', label=league, color=colors(i))
         
         plt.title('Exalted Orb trend per League')
         plt.xlabel('Day of the League')
