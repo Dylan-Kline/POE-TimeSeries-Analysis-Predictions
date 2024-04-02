@@ -4,7 +4,7 @@ import pandas as pd
 class DataHelper:
 
     @staticmethod
-    def grab_all_leagues_currency_data(leagues = ['Afflication', 'Betrayal', 'Breach', 
+    def grab_all_leagues_currency_data(leagues = ['Affliction', 'Betrayal', 'Breach', 
                                                   'Delirium', 'Delve', 'Heist', 'Legacy',
                     'Abyss', 'Bestiary', 'Essence', 'Harbinger', 'Metamorph',
                     'Synthesis', 'Incursion', 'Legion', 'Ritual', 'Blight',

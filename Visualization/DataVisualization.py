@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 plt.style.use('fivethirtyeight')
 
@@ -54,7 +55,32 @@ class DataVisualization:
         # Display the plot
         plt.tight_layout()
         plt.show()
-        
+    
+    @staticmethod
+    def stepped_plot(data: pd.DataFrame, x_feature, y_feature, league) -> None:
+        plot_params = dict(
+            color="0.75",
+            style=".-",
+            markeredgecolor="0.25",
+            markerfacecolor="0.25",
+            legend=False,
+        )
+
+        # Grab specific league's data
+        data = data[data['League'] == league]
+
+        # Sort based on date
+        data.sort_values(by=x_feature)
+
+        data[y_feature].plot(**plot_params)
+
+        # Set x ticks to months
+        plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%B'))
+
+        plt.ylabel(y_feature)
+        plt.tight_layout()
+        plt.show()
 
     @staticmethod
     def visualize_price_all_leagues(data: pd.DataFrame) -> None:
