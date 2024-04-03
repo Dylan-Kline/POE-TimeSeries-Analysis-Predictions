@@ -3,6 +3,7 @@ import pandas as pd
 from Preprocessing.DataHelper import *
 from Visualization.DataVisualization import *
 from Preprocessing.FeatureEngineer import *
+from Preprocessing.Preprocessing import *
 
 def main():
     leagues = ['Affliction', 'Betrayal', 'Breach', 
@@ -11,8 +12,9 @@ def main():
                     'Synthesis', 'Incursion', 'Legion', 'Ritual', 'Blight',
                     'Harvest', 'Ultimatum', 'Expedition', 'Scourge', 'Archnemesis',
                     'Sentinel', 'Kalandra', 'Sanctum', 'Crucible', 'Ancestor']
+    
     data_path = "data/currency.csv"
-    df = pd.read_csv("data/currency.csv")
+    df = pd.read_csv(data_path)
 
     # Convert date feature to standard datetime
     df['Date'] = pd.to_datetime(df['Date'])
@@ -23,12 +25,19 @@ def main():
     df.drop(['Get', 'Pay'], axis=1, inplace=True)
     df.info()
 
-    # Data Visualization of data
+    # Remove outliers from data to see if they affect model accuracy negatively
 
-    # For each league display the stepped plot
-    # for league in leagues:
-    league = 'Affliction'
-    DataVisualization.stepped_plot_all(df, 'Date', 'Value', leagues)
+    ### Feature Engineering ###
+
+    # Create time of league feature
+    df = FeatureEngineer.timeOfLeague_feature(df)
+    print(df[df['League'] == 'Bestiary'])
+
+
+    # Data Visualization of data #
+
+    #DataVisualization.boxstrip_plot(df, 'Value', 'League')
+    #DataVisualization.stepped_plot_all(df, 'Date', 'Value', leagues)
     #DataVisualization.visualize_price_all_leagues(df)
     #DataVisualization.histodist_for_features(df)
     #DataVisualization.plot_probability_density(df)
