@@ -31,7 +31,7 @@ def main():
 
     # Create time of league feature
     df = FeatureEngineer.timeOfLeague_feature(df)
-    print(df[df['League'] == 'Bestiary'])
+    print(df[df['Date'] > '2020-11-29'].sort_values(by='Date'))
 
 
     # Data Visualization of data #

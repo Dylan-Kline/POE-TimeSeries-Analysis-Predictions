@@ -13,14 +13,22 @@ class FeatureEngineer:
         data['WeekOfLeague'] = np.ceil(data['DayOfLeague'] / 7).astype(int)
 
     @staticmethod
-    def estimated_chaos_rate(data: pd.DataFrame) -> pd.DataFrame:
+    def estimated_chaos_features(data: pd.DataFrame) -> pd.DataFrame:
         '''
-            Adds a chaos creation rate feature to the given dataframe, provided it includes the time of league
-            feature. Otherwise, adds a new feature to indicate the time of league 'start', 'mid', 'end', then uses
-            this to create a chaos creation rate feature.
+            Adds an estimated chaos creation rate and estimated amount of chaos in circulation 
+            to the given dataframe, provided it includes the 'LeaguePeriod' feature. 
+            Otherwise, adds a new feature to indicate the time of league 'start', 'mid', 'end', 
+            then uses this to create a chaos creation rate feature.
             @ data : pandas dataframe
             return : chaos engineered dataframe
             '''
+        
+        if 'LeaguePeriod' not in data.columns():
+            data = FeatureEngineer.timeOfLeague_feature(data)
+
+        
+
+
         
 
     @staticmethod
