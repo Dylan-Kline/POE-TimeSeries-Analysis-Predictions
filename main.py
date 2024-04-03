@@ -29,11 +29,11 @@ def main():
 
     ### Feature Engineering ###
 
-    # Create time of league feature
+    # engineer time of league feature
     df = FeatureEngineer.timeOfLeague_feature(df)
-    print(df[df['Date'] > '2020-11-29'].sort_values(by='Date'))
-
-
+    
+    # engineer chaos features
+    
     # Data Visualization of data #
 
     #DataVisualization.boxstrip_plot(df, 'Value', 'League')
@@ -44,5 +44,8 @@ def main():
     #DataVisualization.boxstrip_plot(df, 'Value', 'DayOfLeague')
     #DataVisualization.boxstrip_plot(df, 'Value', 'WeekOfLeague')
     #DataVisualization.boxstrip_plot(df, 'Value', 'Confidence')
+    
+    # Test functions
+    #FeatureEngineer.calc_chaos_rate(100)
 
 main()
