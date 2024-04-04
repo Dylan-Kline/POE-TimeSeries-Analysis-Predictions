@@ -32,6 +32,8 @@ def main():
     # engineer time of league feature
     df = FeatureEngineer.timeOfLeague_feature(df)
     df = FeatureEngineer.estimated_chaos_features(df)
+    df = FeatureEngineer.add_all_lagged_features(df)
+    print(df)
     
     # engineer chaos features
     

@@ -71,7 +71,7 @@ class FeatureEngineer:
 
 
     @staticmethod
-    def partition_data(league):
+    def partition_data(league: pd.DataFrame):
 
         # make sure league data is sorted by DayOfLeague, from start to end of league
         league = league.sort_values(by='DayOfLeague')
@@ -88,6 +88,70 @@ class FeatureEngineer:
                                                   else 2)
         
         return league
+
+    @staticmethod
+    def add_all_lagged_features(data: pd.DataFrame):
+        '''
+            Adds three new features to the given dataframe, 'lag_1' - the price one day ago,
+            'lag_2' - the price three days ago, 'lag_3' - the price one week ago.
+            @ data : pandas dataframe
+            return : data with new features.
+            '''
+        
+        # Grab lagged columns
+        one_day_lag = FeatureEngineer.add_one_day_lag(data['Value']).fillna(0)
+        three_day_lag = FeatureEngineer.add_three_day_lag(data['Value']).fillna(0)
+        week_lag = FeatureEngineer.add_week_lag(data['Value']).fillna(0)
+
+        return pd.concat(
+            [
+                data,
+                one_day_lag,
+                three_day_lag,
+                week_lag
+            ],
+            axis=1
+        )
+
+
+    @staticmethod
+    def add_one_day_lag(data: pd.DataFrame):
+        '''
+            Adds a 'lag_1' feature which is the price one day ago.
+            @ data : pandas dataframe
+            return : data with new features.
+            '''
+        return pd.concat({
+            'lag_1': data.shift(1)
+        }, axis=1)
+
+    @staticmethod
+    def add_three_day_lag(data: pd.DataFrame):
+        '''
+            Adds a 'lag_2' feature which is the price three day ago.
+            @ data : pandas dataframe
+            return : data with new features.
+            '''
+        return pd.concat(
+            {
+                'lag_2' : data.shift(3)
+            },
+            axis=1
+        )
+
+    @staticmethod
+    def add_week_lag(data: pd.DataFrame):
+        '''
+            Adds a 'lag_3' feature which is the price one week ago.
+            @ data : pandas dataframe
+            return : data with new features.
+            '''
+        return pd.concat(
+            {
+                'lag_3' : data.shift(7)
+            },
+            axis=1
+        )
 
 
 
