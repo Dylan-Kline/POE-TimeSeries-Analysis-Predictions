@@ -24,12 +24,33 @@ class FeatureEngineer:
             return : chaos engineered dataframe
             '''
         
-        if 'LeaguePeriod' not in data.columns():
+        if 'LeaguePeriod' not in data.columns:
             data = FeatureEngineer.timeOfLeague_feature(data)
 
-        # Player count is an exponential decay function: count = (init_amount - C) * e ^ (-k * t)) + C
-        
+        # Add chaos generated per day value
+        data['ChaosPerDay'] = data.groupby('League')['DayOfLeague'].apply(FeatureEngineer.calc_chaos_generated_per_day).reset_index(drop=True)
 
+        # Add total chaos at the time of day
+        data['TotalChaos'] = data.groupby('League')['ChaosPerDay'].cumsum()
+        
+        return data
+
+    @staticmethod
+    def calc_chaos_generated_per_day(day: int):
+
+        initial_player_count = 99577 # estimated initial player count at league start
+        end_player_count = 11445 # estimated end player count at league end
+        decay_rate = 0.0265348321 # decay rate of player count over time
+
+        # Player count at the current day and chaos generated for that day per player
+        player_count = (initial_player_count - end_player_count) * np.exp(-decay_rate * (day - 1)) + end_player_count
+        chaos_gen_rate = FeatureEngineer.calc_chaos_rate(day)
+
+        # Chaos generated for the day
+        chaos_for_day = player_count * chaos_gen_rate
+        return chaos_for_day
+
+    @staticmethod
     def calc_chaos_rate(day: int):
         
         max_rate = 60 # per day
@@ -41,8 +62,6 @@ class FeatureEngineer:
         chaos_rate = max_rate / (1 + np.exp(-growth_rate * (day + t0)))
         return chaos_rate
         
-        
-
     @staticmethod
     def timeOfLeague_feature(data: pd.DataFrame) -> pd.DataFrame:
         '''

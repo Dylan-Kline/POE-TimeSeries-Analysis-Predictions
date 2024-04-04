@@ -31,6 +31,7 @@ def main():
 
     # engineer time of league feature
     df = FeatureEngineer.timeOfLeague_feature(df)
+    df = FeatureEngineer.estimated_chaos_features(df)
     
     # engineer chaos features
     
