@@ -97,61 +97,45 @@ class FeatureEngineer:
             @ data : pandas dataframe
             return : data with new features.
             '''
-        
-        # Grab lagged columns
-        one_day_lag = FeatureEngineer.add_one_day_lag(data['Value']).fillna(0)
-        three_day_lag = FeatureEngineer.add_three_day_lag(data['Value']).fillna(0)
-        week_lag = FeatureEngineer.add_week_lag(data['Value']).fillna(0)
-
-        return pd.concat(
-            [
-                data,
-                one_day_lag,
-                three_day_lag,
-                week_lag
-            ],
-            axis=1
-        )
-
+        data = data.groupby(by='League').apply(FeatureEngineer.apply_lags).reset_index(drop=True)
+        return data
 
     @staticmethod
-    def add_one_day_lag(data: pd.DataFrame):
+    def apply_lags(league_data: pd.DataFrame):
+        '''
+            Applies the lag features to the given League's data
+            '''
+        league_data['lag_1'] = FeatureEngineer.add_one_day_lag(league_data['Value']).fillna(0)
+        league_data['lag_2'] = FeatureEngineer.add_three_day_lag(league_data['Value']).fillna(0)
+        league_data['lag_3'] = FeatureEngineer.add_week_lag(league_data['Value']).fillna(0)
+        return league_data
+
+    @staticmethod
+    def add_one_day_lag(data: pd.Series):
         '''
             Adds a 'lag_1' feature which is the price one day ago.
             @ data : pandas dataframe
             return : data with new features.
             '''
-        return pd.concat({
-            'lag_1': data.shift(1)
-        }, axis=1)
+        return data.shift(1)
 
     @staticmethod
-    def add_three_day_lag(data: pd.DataFrame):
+    def add_three_day_lag(data: pd.Series):
         '''
             Adds a 'lag_2' feature which is the price three day ago.
             @ data : pandas dataframe
             return : data with new features.
             '''
-        return pd.concat(
-            {
-                'lag_2' : data.shift(3)
-            },
-            axis=1
-        )
+        return data.shift(3)
 
     @staticmethod
-    def add_week_lag(data: pd.DataFrame):
+    def add_week_lag(data: pd.Series):
         '''
             Adds a 'lag_3' feature which is the price one week ago.
             @ data : pandas dataframe
             return : data with new features.
             '''
-        return pd.concat(
-            {
-                'lag_3' : data.shift(7)
-            },
-            axis=1
-        )
+        return data.shift(7)
 
 
 

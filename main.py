@@ -33,6 +33,7 @@ def main():
     df = FeatureEngineer.timeOfLeague_feature(df)
     df = FeatureEngineer.estimated_chaos_features(df)
     df = FeatureEngineer.add_all_lagged_features(df)
+    pd.set_option('display.max_rows', None)
     print(df)
     
     # engineer chaos features
