@@ -30,14 +30,23 @@ def main():
     print(df.isnull())
 
     # Remove outliers from data to see if they affect model accuracy negatively
-
+    
+    ### Preprocessing ###
+    
+    # encode the 'Confidence' column
+    column_name = 'Confidence'
+    class_labels = df[column_name].unique()
+    df = Preprocessing.label_encoder(df, class_labels, column_name=column_name)
+    
     ### Feature Engineering ###
     df = FeatureEngineer.apply_all_features(df)
     pd.set_option('display.max_rows', None)
     print(df[df['League'] == 'Ultimatum'])
     
+    
     # Data Visualization of data #
 
+    #DataVisualization.plot_autocorr_all_leagues(df, 1000, column_name='Value')
     #DataVisualization.boxstrip_plot(df, 'Value', 'League')
     #DataVisualization.stepped_plot_all(df, 'Date', 'Value', leagues)
     #DataVisualization.visualize_price_all_leagues(df)

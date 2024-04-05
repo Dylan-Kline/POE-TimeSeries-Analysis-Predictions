@@ -1,14 +1,34 @@
+from matplotlib.ticker import MultipleLocator
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import math
+from statsmodels.graphics.tsaplots import plot_acf
 
 plt.style.use('fivethirtyeight')
 
 class DataVisualization:
 
+    @staticmethod
+    def plot_autocorr_all_leagues(data: pd.DataFrame, lags: int, column_name : str, figsize = (15,10)) -> None:
+        '''
+            Plots the autocorrelation graph for the give column 'column_name' in the dataframe 'data'
+            @ data : pandas dataframe
+            @ column_name : name of column in 'data'
+            @ figsize : size of plot figure
+            '''
+        figure, ax = plt.subplots(figsize=figsize)
+        
+        # Plot auto corr
+        plot_acf(data[column_name], ax, lags)
+        plt.title(f"Autocorrelation of {column_name} over all leagues")
+        ax.xaxis.set_major_locator(MultipleLocator(30))
+        
+        plt.tight_layout()
+        plt.show()
+        
     @staticmethod
     def histodist_for_features(data: pd.DataFrame) -> None:
         features = data.select_dtypes(include=['float'])
