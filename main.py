@@ -28,15 +28,9 @@ def main():
     # Remove outliers from data to see if they affect model accuracy negatively
 
     ### Feature Engineering ###
-
-    # engineer time of league feature
-    df = FeatureEngineer.timeOfLeague_feature(df)
-    df = FeatureEngineer.estimated_chaos_features(df)
-    df = FeatureEngineer.add_all_lagged_features(df)
+    df = FeatureEngineer.apply_all_features(df)
     pd.set_option('display.max_rows', None)
-    print(df)
-    
-    # engineer chaos features
+    print(df[df['League'] == 'Ultimatum'])
     
     # Data Visualization of data #
 

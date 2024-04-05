@@ -2,6 +2,57 @@ import pandas as pd
 import numpy as np
 
 class FeatureEngineer:
+
+    @staticmethod
+    def apply_all_features(data: pd.DataFrame):
+        '''
+            Applies all features in the FeatureEngineer class to the given dataframe
+            @ data : pandas dataframe
+            return : updated data'''
+        data = FeatureEngineer.timeOfLeague_feature(data)
+        data = FeatureEngineer.estimated_chaos_features(data)
+        data = FeatureEngineer.add_all_lagged_features(data)
+        data = FeatureEngineer.rolling_features(data)
+
+        return data
+    
+    @staticmethod
+    def rolling_features(data: pd.DataFrame, local_window_size=5, general_window_size=15, future_context=False):
+        '''
+          Adds the rolling min, mean, and max for the given window sizes.
+          @ data : pandas dataframe to be modified
+          @ local_window_size : window size for the local rolling values
+          @ general_window_size : window size for the general rolling values
+          @ future_context : bool flag that controls whether we include future values 
+          in the rolling value calculation or not
+          return : modified dataframe 'data' 
+        '''
+        return data.groupby(by='League').apply(
+            FeatureEngineer.apply_rolling,
+            local_window_size,
+            general_window_size,
+            future_context
+        ).reset_index(drop=True)
+    
+    @staticmethod
+    def apply_rolling(league : pd.DataFrame, local_window_size = 5, general_window_size = 15, future_context=False):
+        '''
+            Helper function for @rolling_features method.
+            '''
+        local_rolling = league['Value'].rolling(local_window_size, min_periods=1, center=future_context)
+        general_rolling = league['Value'].rolling(general_window_size, min_periods=1, center=future_context)
+
+        # Local rolling values
+        league['rolling_min'] = local_rolling.min()
+        league['rolling_mean'] = local_rolling.mean()
+        league['rolling_max'] = local_rolling.max()
+
+        # General rolling values
+        league['gen_rolling_min'] = general_rolling.min()
+        league['gen_rolling_mean'] = general_rolling.mean()
+        league['gen_rolling_max'] = general_rolling.max()
+
+        return league
     
     @staticmethod
     def add_week_of_league(data):
