@@ -4,6 +4,7 @@ from Preprocessing.DataHelper import *
 from Visualization.DataVisualization import *
 from Preprocessing.FeatureEngineer import *
 from Preprocessing.Preprocessing import *
+from sklearn.preprocessing import *
 
 def main():
     leagues = ['Affliction', 'Betrayal', 'Breach', 
@@ -22,12 +23,15 @@ def main():
     df.info()
 
     # Remove irrelevant features
-    df.drop(['Get', 'Pay'], axis=1, inplace=True)
+    df.drop(['Get', 'Pay', 'Date', 'StartDate'], axis=1, inplace=True)
     df.info()
     
     # quick check for null and nan values
-    print(df.isna())
-    print(df.isnull())
+    if 'True' in df.isna():
+        print('na values in df')
+    
+    if 'True' in df.isnull():
+        print('null values in df')
 
     # Remove outliers from data to see if they affect model accuracy negatively
     
@@ -39,9 +43,21 @@ def main():
     df = Preprocessing.label_encoder(df, class_labels, column_name=column_name)
     
     ### Feature Engineering ###
+    
     df = FeatureEngineer.apply_all_features(df)
-    pd.set_option('display.max_rows', None)
-    print(df[df['League'] == 'Ultimatum'])
+    print(df)
+    
+    ### Normalize the numerical data features for later modeling ###
+    
+    # Grab the numeric and categorical features
+    numeric_cols = df.select_dtypes(['float64']).columns
+    categorical_cols = df.select_dtypes(['int64']).columns
+    
+    # normalize numerical data only
+    scaler = MinMaxScaler()
+    df_normalized = df.copy()
+    df_normalized[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+    print(df_normalized)
     
     
     # Data Visualization of data #
@@ -56,7 +72,4 @@ def main():
     #DataVisualization.boxstrip_plot(df, 'Value', 'WeekOfLeague')
     #DataVisualization.boxstrip_plot(df, 'Value', 'Confidence')
     
-    # Test functions
-    #FeatureEngineer.calc_chaos_rate(100)
-
 main()

@@ -26,7 +26,7 @@ class FeatureEngineer:
             @ data : pandas dataframe
             return : updated dataframe
             '''
-        data['DailyPercentReturn'] = data.groupby(by='League')['Value'].transform(lambda x: ((x - x.shift(1)) / x.shift(1)) * 100).fillna(0)
+        data['DailyPercentReturn'] = data.groupby(by='League', group_keys=False)['Value'].transform(lambda x: ((x - x.shift(1)) / x.shift(1)) * 100).fillna(0)
         return data
     
     @staticmethod
@@ -37,7 +37,7 @@ class FeatureEngineer:
             @ data : pandas dataframe
             return : updated dataframe
             '''
-        data['DailyReturn'] = data.groupby(by='League')['Value'].transform(lambda x: x - x.shift(1)).fillna(0)
+        data['DailyReturn'] = data.groupby(by='League', group_keys=False)['Value'].transform(lambda x: x - x.shift(1)).fillna(0)
         return data
     
     @staticmethod
@@ -51,7 +51,7 @@ class FeatureEngineer:
           in the rolling value calculation or not
           return : modified dataframe 'data' 
         '''
-        return data.groupby(by='League').apply(
+        return data.groupby(by='League', group_keys=False).apply(
             FeatureEngineer.apply_rolling,
             local_window_size,
             general_window_size,
@@ -103,10 +103,10 @@ class FeatureEngineer:
             data = FeatureEngineer.timeOfLeague_feature(data)
 
         # Add chaos generated per day value
-        data['ChaosPerDay'] = data.groupby('League')['DayOfLeague'].apply(FeatureEngineer.calc_chaos_generated_per_day).reset_index(drop=True)
+        data['ChaosPerDay'] = data.groupby('League', group_keys=False)['DayOfLeague'].apply(FeatureEngineer.calc_chaos_generated_per_day).reset_index(drop=True)
 
         # Add total chaos at the time of day
-        data['TotalChaos'] = data.groupby('League')['ChaosPerDay'].cumsum()
+        data['TotalChaos'] = data.groupby('League', group_keys=False)['ChaosPerDay'].cumsum()
         
         return data
 
@@ -142,7 +142,7 @@ class FeatureEngineer:
         '''
             Adds a time of league feature to the given dataframe, which has values 'start', 'mid', 'end'.
             '''
-        return data.groupby('League').apply(FeatureEngineer.partition_data).reset_index(drop=True)
+        return data.groupby('League', group_keys=False).apply(FeatureEngineer.partition_data).reset_index(drop=True)
 
 
     @staticmethod
@@ -172,7 +172,7 @@ class FeatureEngineer:
             @ data : pandas dataframe
             return : data with new features.
             '''
-        data = data.groupby(by='League').apply(FeatureEngineer.apply_lags).reset_index(drop=True)
+        data = data.groupby(by='League', group_keys=False).apply(FeatureEngineer.apply_lags).reset_index(drop=True)
         return data
 
     @staticmethod
