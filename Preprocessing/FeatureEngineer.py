@@ -13,7 +13,31 @@ class FeatureEngineer:
         data = FeatureEngineer.estimated_chaos_features(data)
         data = FeatureEngineer.add_all_lagged_features(data)
         data = FeatureEngineer.rolling_features(data)
+        data = FeatureEngineer.daily_return_feature(data)
+        data = FeatureEngineer.daily_percentage_return(data)
 
+        return data
+    
+    @staticmethod
+    def daily_percentage_return(data: pd.DataFrame):
+        '''
+            Takes the given dataframe and appends a 'DailyPercentReturn' feature, 
+            which is the percentage difference in price between the current day and the previous day
+            @ data : pandas dataframe
+            return : updated dataframe
+            '''
+        data['DailyPercentReturn'] = data.groupby(by='League')['Value'].transform(lambda x: ((x - x.shift(1)) / x.shift(1)) * 100).fillna(0)
+        return data
+    
+    @staticmethod
+    def daily_return_feature(data: pd.DataFrame):
+        '''
+            Takes the given dataframe and appends a 'DailyReturn' feature, 
+            which is the difference in price between the current day and the previous day
+            @ data : pandas dataframe
+            return : updated dataframe
+            '''
+        data['DailyReturn'] = data.groupby(by='League')['Value'].transform(lambda x: x - x.shift(1)).fillna(0)
         return data
     
     @staticmethod

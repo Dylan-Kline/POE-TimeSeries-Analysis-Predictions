@@ -24,6 +24,10 @@ def main():
     # Remove irrelevant features
     df.drop(['Get', 'Pay'], axis=1, inplace=True)
     df.info()
+    
+    # quick check for null and nan values
+    print(df.isna())
+    print(df.isnull())
 
     # Remove outliers from data to see if they affect model accuracy negatively
 
