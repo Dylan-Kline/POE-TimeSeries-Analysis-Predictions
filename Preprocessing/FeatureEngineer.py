@@ -20,6 +20,30 @@ class FeatureEngineer:
         return data
     
     @staticmethod
+    def make_multi_target(df : pd.DataFrame, steps=5):
+        '''
+            Creates multi targeted features for the y values.
+            '''
+        return FeatureEngineer.stepped_values(df, steps).fillna(0)
+        
+    @staticmethod
+    def stepped_values(data: pd.DataFrame, steps: int):
+        '''
+            Adds stepped y-values to allow for prediction of multiple days in the future.
+            '''
+        data = data.groupby('League').apply(FeatureEngineer.create_stepped_features, num_steps=steps)
+        return data
+            
+    @staticmethod
+    def create_stepped_features(league: pd.DataFrame, num_steps: int):
+        '''
+            Helper function for @ stepped_values.
+            '''
+        for step in range(1, num_steps + 1):
+            league[f'y_step_{step}'] = league['Value'].shift(-step)
+        return league
+    
+    @staticmethod
     def add_months(data: pd.DataFrame):
         '''
             Adds a 'Month' feature based on 'Date' feature in dataframe.
