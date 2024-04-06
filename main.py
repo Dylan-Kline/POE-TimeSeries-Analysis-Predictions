@@ -56,7 +56,10 @@ def main():
     y_features = ['y_step_1', 'y_step_2', 'y_step_3', 'y_step_4', 'y_step_5']
     numeric_cols = df.select_dtypes(['float64']).columns
     numeric_cols = numeric_cols.drop(y_features)
-    categorical_cols = df.select_dtypes(['int64', 'int32', 'datetime64']).columns
+    numeric_cols = numeric_cols.drop('Value')
+    categorical_cols = df.select_dtypes(['int64', 'int32', 'datetime64']).columns.to_list()
+    if 'Value' in df.columns:
+        categorical_cols.append('Value')
     
     # Split the data into training, and testing dataset
     input_features = df.columns.drop(y_features)
@@ -78,7 +81,13 @@ def main():
     x_train_full = pd.concat([x_train_scaled_numeric_df, x_train[categorical_cols]], axis=1)
     x_val_full = pd.concat([x_val_scaled_numeric_df, x_val[categorical_cols]], axis=1)
     
-    # Save training and validation data
+    # Sorting by 'Date' column
+    x_train_full = x_train_full.sort_values(by='Date')
+    y_train = y_train.sort_values(by='Date')
+    x_val_full = x_val_full.sort_values(by='Date')
+    y_val = y_val.sort_values(by='Date')
+
+    # Save to CSV
     x_train_full.to_csv('data/train/x_train_scaled.csv', index=False)
     y_train.to_csv('data/train/y_train.csv', index=False)
     x_val_full.to_csv('data/test/x_val_scaled.csv', index=False)
