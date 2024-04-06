@@ -65,10 +65,23 @@ def main():
     
     x_train, x_val, y_train, y_val = DataProcessing.split(df, input_features, output_features, 'Ultimatum')
     
+    # Scale the training and validation datasets (only numeric columns)
+    scaler = MinMaxScaler()
+    x_train_scaled_numeric = scaler.fit_transform(x_train[numeric_cols])
+    x_val_scaled_numeric = scaler.transform(x_val[numeric_cols])
+    
+    # Convert the scaled arrays back to pandas DataFrames
+    x_train_scaled_numeric_df = pd.DataFrame(x_train_scaled_numeric, columns=numeric_cols, index=x_train.index)
+    x_val_scaled_numeric_df = pd.DataFrame(x_val_scaled_numeric, columns=numeric_cols, index=x_val.index)
+
+    # Concatenate with the categorical columns and datetime columns
+    x_train_full = pd.concat([x_train_scaled_numeric_df, x_train[categorical_cols]], axis=1)
+    x_val_full = pd.concat([x_val_scaled_numeric_df, x_val[categorical_cols]], axis=1)
+    
     # Save training and validation data
-    x_train.to_csv('data/train/x_train.csv', index=False)
+    x_train_full.to_csv('data/train/x_train_scaled.csv', index=False)
     y_train.to_csv('data/train/y_train.csv', index=False)
-    x_val.to_csv('data/test/x_val.csv', index=False)
+    x_val_full.to_csv('data/test/x_val_scaled.csv', index=False)
     y_val.to_csv('data/test/y_val.csv', index=False)
     
     # Data Visualization of data #
