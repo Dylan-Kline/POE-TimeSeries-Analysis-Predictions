@@ -6,6 +6,7 @@ from Visualization.DataVisualization import *
 from Preprocessing.FeatureEngineer import *
 from Preprocessing.Preprocessing import *
 from sklearn.preprocessing import *
+from DataProcessing import *
 
 def main():
     leagues = ['Affliction', 'Betrayal', 'Breach', 
@@ -42,47 +43,33 @@ def main():
     ### Feature Engineering ###
     
     df = FeatureEngineer.apply_all_features(df)
+    df = FeatureEngineer.make_multi_target(df)
     print(df)
     
     # Remove irrelevant features
-    df.drop(['Get', 'Pay', 'League', 'StartDate'], axis=1, inplace=True)
+    df.drop(['Get', 'Pay', 'StartDate'], axis=1, inplace=True)
     df.info()
     
     ### Normalize and split the data ###
     
     # Grab the numeric and categorical features
+    y_features = ['y_step_1', 'y_step_2', 'y_step_3', 'y_step_4', 'y_step_5']
     numeric_cols = df.select_dtypes(['float64']).columns
-    numeric_cols = numeric_cols.drop('Value')
+    numeric_cols = numeric_cols.drop(y_features)
     categorical_cols = df.select_dtypes(['int64', 'int32', 'datetime64']).columns
     
-    # Split the data into training, and testing datasets
-    x_examples = df.drop('Value', axis=1)
-    y_examples = df['Value']
+    # Split the data into training, and testing dataset
+    input_features = df.columns.drop(y_features)
+    output_features = y_features.copy()
+    output_features.append('Date')
     
-    x_train, x_val, y_train, y_val = train_test_split(x_examples, y_examples, test_size=0.2, random_state=42)
+    x_train, x_val, y_train, y_val = DataProcessing.split(df, input_features, output_features, 'Ultimatum')
     
-    # Normalize training and validation datasets
-    scaler = MinMaxScaler()
-    x_train_scaled = scaler.fit_transform(x_train[numeric_cols])
-    x_val_scaled = scaler.transform(x_val[numeric_cols])
-
-    # # Convert the scaled arrays back to pandas DataFrame (Retain original index)
-    # x_train_scaled_df = pd.DataFrame(x_train_scaled, columns=numeric_cols, index=x_train.index)
-    # x_val_scaled_df = pd.DataFrame(x_val_scaled, columns=numeric_cols, index=x_val.index)
-
-    # # Concatenate with categorical columns using the index for correct alignment
-    # x_train_full = pd.concat([x_train_scaled_df, x_train[categorical_cols]], axis=1)
-    # x_val_full = pd.concat([x_val_scaled_df, x_val[categorical_cols]], axis=1)
-    
-    # # Change index to date
-    # x_train_full.set_index('Date')
-    # x_val_full.set_index('Date')
-
-    # # Save training and validation data
-    # x_train_full.to_csv('data/train/x_train.csv', index=True)
-    # y_train.to_csv('data/train/y_train.csv', index=True)
-    # x_val_full.to_csv('data/test/x_val.csv', index=True)
-    # y_val.to_csv('data/test/y_val.csv', index=True)
+    # Save training and validation data
+    x_train.to_csv('data/train/x_train.csv', index=False)
+    y_train.to_csv('data/train/y_train.csv', index=False)
+    x_val.to_csv('data/test/x_val.csv', index=False)
+    y_val.to_csv('data/test/y_val.csv', index=False)
     
     # Data Visualization of data #
 

@@ -31,7 +31,7 @@ class FeatureEngineer:
         '''
             Adds stepped y-values to allow for prediction of multiple days in the future.
             '''
-        data = data.groupby('League').apply(FeatureEngineer.create_stepped_features, num_steps=steps)
+        data = data.groupby('League', group_keys=False).apply(FeatureEngineer.create_stepped_features, num_steps=steps)
         return data
             
     @staticmethod
