@@ -15,7 +15,16 @@ class FeatureEngineer:
         data = FeatureEngineer.rolling_features(data)
         data = FeatureEngineer.daily_return_feature(data)
         data = FeatureEngineer.daily_percentage_return(data)
+        data = FeatureEngineer.add_months(data)
 
+        return data
+    
+    @staticmethod
+    def add_months(data: pd.DataFrame):
+        '''
+            Adds a 'Month' feature based on 'Date' feature in dataframe.
+            '''
+        data['Month'] = pd.to_datetime(data['Date']).dt.month
         return data
     
     @staticmethod

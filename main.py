@@ -22,10 +22,6 @@ def main():
     df['StartDate'] = pd.to_datetime(df['StartDate'])
     df.info()
 
-    # Remove irrelevant features
-    df.drop(['Get', 'Pay', 'Date', 'StartDate'], axis=1, inplace=True)
-    df.info()
-    
     # quick check for null and nan values
     if 'True' in df.isna():
         print('na values in df')
@@ -47,11 +43,15 @@ def main():
     df = FeatureEngineer.apply_all_features(df)
     print(df)
     
+    # Remove irrelevant features
+    df.drop(['Get', 'Pay', 'Date', 'League', 'StartDate'], axis=1, inplace=True)
+    df.info()
+    
     ### Normalize the numerical data features for later modeling ###
     
     # Grab the numeric and categorical features
     numeric_cols = df.select_dtypes(['float64']).columns
-    categorical_cols = df.select_dtypes(['int64']).columns
+    categorical_cols = df.select_dtypes(['int64', 'int32']).columns
     
     # normalize numerical data only
     scaler = MinMaxScaler()
